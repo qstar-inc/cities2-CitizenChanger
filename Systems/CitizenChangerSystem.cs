@@ -2,13 +2,12 @@
 using Game.Prefabs;
 using Unity.Entities;
 
-namespace CitizenChanger.Systems
+namespace CitizenModelManager.Systems
 {
     public partial class CitizenChangerSystem : GameSystemBase
     {
         private static PrefabSystem m_PrefabSystem;
         private static EntityQuery _humanPrefabQuery;
-        private static readonly CharacterGroupLoader CharacterGroupLoader = new();
 
         protected override void OnCreate()
         {
@@ -26,23 +25,45 @@ namespace CitizenChanger.Systems
         protected override void OnUpdate()
         {
         }
-        public void Reload(string humanPrefab, int characterGroup)
-        {
-            Mod.log.Info($"Selections: '{humanPrefab}' & '{characterGroup}: {CharacterGroupLoader.CharacterGroupNames[characterGroup]}'");
-            Reload(humanPrefab, CharacterGroupLoader.CharacterGroupNames[characterGroup]);
-        }
+        //public void Reload(string humanPrefab, string group, int characterGroup, string gender)
+        //{
+        //    if (gender == "male")
+        //    {
+        //        Reload(humanPrefab, group, CharacterGroupLoader.CharacterGroupMale[characterGroup]);
+        //    }
+        //    else
+        //    {
+        //        Reload(humanPrefab, group, CharacterGroupLoader.CharacterGroupFemale[characterGroup]);
+        //    }
+            
+        //}
 
-        public void Reload(string humanPrefab, string characterGroup)
+        public void Reload(string humanPrefab, string group, string characterGroup)
         {
             m_PrefabSystem.TryGetPrefab(new PrefabID("HumanPrefab", humanPrefab), out PrefabBase prefabBase);
-            Mod.log.Info($"prefabBase.name: {prefabBase.name}");
             m_PrefabSystem.TryGetEntity(prefabBase, out Entity entity);
 
             m_PrefabSystem.TryGetPrefab(entity, out ObjectGeometryPrefab objectGeometryPrefab);
 
             foreach (ObjectMeshInfo meshGroup in objectGeometryPrefab.m_Meshes)
             {
-                if (meshGroup.m_RequireState == Game.Objects.ObjectState.Warm)
+                if (meshGroup.m_RequireState == Game.Objects.ObjectState.Warm && group.Equals("warm"))
+                {
+                    m_PrefabSystem.TryGetPrefab(new PrefabID("CharacterGroup", characterGroup), out PrefabBase prefab);
+                    if (prefab != null)
+                    {
+                        meshGroup.m_Mesh = (RenderPrefabBase)prefab;
+                    }
+                }
+                if (meshGroup.m_RequireState == Game.Objects.ObjectState.Cold && group.Equals("cold"))
+                {
+                    m_PrefabSystem.TryGetPrefab(new PrefabID("CharacterGroup", characterGroup), out PrefabBase prefab);
+                    if (prefab != null)
+                    {
+                        meshGroup.m_Mesh = (RenderPrefabBase)prefab;
+                    }
+                }
+                if (meshGroup.m_RequireState == Game.Objects.ObjectState.Homeless && group.Equals("homeless"))
                 {
                     m_PrefabSystem.TryGetPrefab(new PrefabID("CharacterGroup", characterGroup), out PrefabBase prefab);
                     if (prefab != null)

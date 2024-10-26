@@ -5,6 +5,11 @@
 		<TargetFramework>net472</TargetFramework>
 		<Configurations>Debug;Release</Configurations>
 		<LangVersion>12</LangVersion>
+
+		<AssemblyName>CitizenModelManager</AssemblyName>
+		<AssemblyTitle>Citizen Model Manager</AssemblyTitle>
+		<Authors>StarQ</Authors>
+		<Version>1.0.0</Version>
 		
 		<!--The file where mod information which is required for publishing mod on PDX mods are stored-->
 		<PublishConfigurationPath>Properties\PublishConfiguration.xml</PublishConfigurationPath>
